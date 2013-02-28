@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+
+<ui:composition template="layout.xhtml">
+
+	<ui:define name="title">Upload</ui:define>
+
+	<ui:define name="menu">
+		<ul class="nav nav-pills">
+			<li>
+				<a href="index.xhtml">Home</a>
+			</li>
+			<li>
+				<a href="gallery.xhtml">Gallery</a>
+			</li>
+			<li class="active">
+				<a href="upload.xhtml">Upload</a>
+			</li>
+		</ul>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<div class="page-header">
+			<h1>Upload</h1>
+		</div>
+
+		<div id="fileupload" class="well" style="text-align: center; border: black 3px dashed; background: white; margin: 50px; " data-bind="pasteZoneUploader: { send: sendFile , done: doneFile }">
+			<img src="assets/img/uploadPicture.png"/>
+		</div>
+
+		<div class="page-header">
+			<h2>Uploaded Items</h2>
+		</div>
+
+		<div class="row-fluid">
+			<ul class="thumbnails" data-bind="foreach: uploads">
+				<li class="span4">
+					<div class="thumbnail">
+						<img src="http://placehold.it/300x200" />
+						<h3>Thumbnail label</h3>
+						<p>Thumbnail caption...</p>
+						<a href="#" class="btn btn-success"><i class="icon-white icon-ok"></i> Publish</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+
+	</ui:define>
+
+	<ui:define name="scripts">
+
+		<script type="text/javascript">
+			var uploadViewModel = new UploadViewModel();
+			uploadViewModel.uploads(["C","B","A"]);
+			ko.applyBindings(uploadViewModel);
+			
+			$(function () {
+			    /*$('#fileupload').fileupload({
+			        dataType: 'json',
+			        pasteZone: $('#fileupload'),
+			        autoUpload: true,
+			        singleFileUploads: false,
+			        add: function (e, data) {
+			        	data.submit();
+			        },
+			        send: function (e, data) {
+			        	alert("YES");
+			        	uploadViewModel.uploads.push("D");
+			        },
+			        done: function (e, data) {
+			            $.each(data.result, function (index, file) {
+			                $('<p/>').text(file.name).appendTo(document.body);
+			            });
+			        }
+			    });*/
+			});
+		</script>
+
+	</ui:define>
+
+</ui:composition>
+
+</html>
