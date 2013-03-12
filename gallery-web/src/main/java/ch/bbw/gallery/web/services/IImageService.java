@@ -63,4 +63,14 @@ public interface IImageService {
 	 * @return Random images
 	 */
 	public List<Image> randomImages(int count);
+	
+	/**
+	 * Returns a list of images in the creation order, beginning from the
+	 * provided image.
+	 * 
+	 * @param count Number of images to return
+	 * @param startId Optional identifier of the starting image
+	 * @return List of images
+	 */
+	public List<Image> getImages(int count, String startId);
 }

@@ -166,15 +166,8 @@ public class ImageService implements IImageService {
 	 */
 	public Image retrieveImage(String id) {
 		GridFSDBFile file = this.gridFS.findOne(new ObjectId(id));
-		BasicDBObject dbo = (BasicDBObject)file.getMetaData();
 		
-		Image image = new Image();
-		image.setId(file.getId().toString());
-		image.setFilename(dbo.getString("filename"));
-		image.setComment(dbo.getString("comment"));
-		image.setType(ImageType.fromMimeType(file.getContentType()));
-		
-		return image;
+		return mapGridFSDBFileToImage(file);
 	}
 	
 	/**
@@ -192,8 +185,8 @@ public class ImageService implements IImageService {
 			while (cursor.hasNext()) {
 				GridFSDBFile file = (GridFSDBFile) cursor.next();
 				
-				String id = file.getId().toString();
-				Image image = retrieveImage(id);
+				//String id = file.getId().toString();
+				Image image = mapGridFSDBFileToImage(file);
 				images.add(image);
 			}
 				
@@ -208,8 +201,8 @@ public class ImageService implements IImageService {
 				
 				GridFSDBFile file = (GridFSDBFile) cursor.skip(num).next();
 				
-				String id = file.getId().toString();
-				Image image = retrieveImage(id);
+				//String id = file.getId().toString();
+				Image image = mapGridFSDBFileToImage(file);
 				
 				if (!images.contains(image)) {
 					images.add(image);
@@ -217,7 +210,58 @@ public class ImageService implements IImageService {
 			}
 		}
 		
+		cursor.close();
+		
 		return images;
+	}
+	
+	/**
+	 * Returns a list of images in the creation order, beginning from the
+	 * provided image
+	 * 
+	 * @param count Number of images to return
+	 * @param startId Optional identifier of the starting image
+	 * @return List of images
+	 */
+	public List<Image> getImages(int count, String startId)
+	{
+		List<Image> images = new ArrayList<Image>();
+		DBObject query;
+		
+		if (startId != null) {
+			GridFSDBFile startFile = this.gridFS.findOne(new ObjectId(startId));
+			Date startDate = startFile.getUploadDate();
+		
+			query = new BasicDBObject("uploadDate", new BasicDBObject("$lt", startDate));
+		} else {
+			query = new BasicDBObject();
+		}
+		
+		DBObject sort = new BasicDBObject("uploadDate", -1); 
+		
+		DBCursor cursor = this.gridFS.getFileList(query).sort(sort);
+		System.out.println(count);
+		while (cursor.hasNext() && images.size() < count) {
+			GridFSDBFile file = (GridFSDBFile)cursor.next();
+			
+			images.add(mapGridFSDBFileToImage(file));
+		}
+		
+		cursor.close();
+		
+		return images;
+	}
+	
+	private Image mapGridFSDBFileToImage(GridFSDBFile file) {
+		BasicDBObject dbo = (BasicDBObject)file.getMetaData();
+		
+		Image image = new Image();
+		image.setId(file.getId().toString());
+		image.setFilename(dbo.getString("filename"));
+		image.setComment(dbo.getString("comment"));
+		image.setType(ImageType.fromMimeType(file.getContentType()));
+		
+		return image;
 	}
 	
 	private BufferedImage resizeImage(BufferedImage img, int width, int height) {
