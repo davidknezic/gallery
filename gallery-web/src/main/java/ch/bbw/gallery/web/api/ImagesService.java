@@ -14,6 +14,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -32,13 +33,13 @@ import ch.bbw.gallery.core.models.ImageSize;
 import ch.bbw.gallery.core.models.ImageType;
 import ch.bbw.gallery.web.api.exceptions.WebApiException;
 import ch.bbw.gallery.web.services.IImageService;
-import ch.bbw.gallery.web.services.ImageService;
 
 @Path("/images")
 public class ImagesService {
 	/**
 	 * ImageService
 	 */
+	@Context
 	private IImageService imageService;
 
 	/**
@@ -47,7 +48,6 @@ public class ImagesService {
 	 * @throws Exception
 	 */
 	public ImagesService() throws Exception {
-		this.imageService = new ImageService();
 	}
 	
 	/**
@@ -62,6 +62,25 @@ public class ImagesService {
 	@Path("/random/{count}")
 	public List<Image> random(@PathParam("count") int count) throws WebApiException {
 		return this.imageService.randomImages(count);
+	}
+	
+	/**
+	 * Get a list of images with the newest first beginning from a specified
+	 * image id or from the beginning (empty id)
+	 * 
+	 * @param count Number of images to return
+	 * @param start Identifier of the starting image or empty
+	 * @return List of images
+	 */
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/list/{count}")
+	public List<Image> list(
+			@PathParam("count") int count,
+			@DefaultValue("") @QueryParam("start") String start) {
+		String startId = (!start.equals("") ? start : null);
+		
+		return this.imageService.getImages(count, startId);
 	}
 	
 	/**
