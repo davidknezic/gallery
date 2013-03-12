@@ -4,9 +4,12 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 
 import ch.bbw.gallery.core.models.Image;
 
@@ -15,13 +18,34 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.ClientConfig;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.json.JSONConfiguration;
-import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 public class RunGameState implements IGameState {
-
+	/**
+	 * Reference to the next state
+	 */
 	private StartGameState startGameState;
 	
+	/**
+	 * Web resource
+	 */
 	private WebResource webResource;
+	
+	/**
+	 * The stage of this state
+	 */
+	private RunGameStateStage stage;
+	
+	/**
+	 * Image of the slot machine
+	 */
+	private BufferedImage slotMachine;
+	
+	/**
+	 * Image of the hatch
+	 */
+	private BufferedImage hatch;
+	
+	private int currentReelNumber;
 	
 	private Image[] imageList;
 	
@@ -31,59 +55,94 @@ public class RunGameState implements IGameState {
 	
 	private int currentImageNumber = 0;
 	
+	private SlotMachineReel[] reels;
+	
 	public RunGameState(String path) {
+		Class<?> loader = getClass();
+		
+		// Set up rest client
 		ClientConfig clientConfig = new DefaultClientConfig();
         clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
 		Client c = Client.create(clientConfig);
-
-		webResource = c.resource(path); // "http://localhost:8080/global-gallery/api"
+		
+		webResource = c.resource(path);
+		
+		try {
+			this.slotMachine = ImageIO.read(loader.getResourceAsStream("/slot.png"));
+			this.hatch = ImageIO.read(loader.getResourceAsStream("/hatch.png"));
+		} catch (IOException e) {
+		}
 	}
 	
 	@Override
 	public void init() {
-		imageList = webResource.path("/random/10").accept(MediaType.APPLICATION_JSON).get(Image[].class);
+		this.stage = RunGameStateStage.OPENING;
 		
-		MultivaluedMap<String, String> map = new MultivaluedMapImpl();
-		map.add("id", imageList[currentImageNumber].getId());
-		map.add("width", "300");
-		map.add("height", "300");
-		currentImage = webResource.path("/thumbnail").queryParams(map).accept(MediaType.APPLICATION_JSON).get(BufferedImage.class);
+		imageList = webResource.path("/images/random")
+				.path("10")
+				.accept(MediaType.APPLICATION_JSON)
+				.get(Image[].class);
+		
+		RunGameStateReelItem[] items = new RunGameStateReelItem[10];
+		
+		for (int i = 0; i < imageList.length; i++) {
+			System.out.println(imageList[i].getId());
+			RunGameStateReelItem tmp = new RunGameStateReelItem();
+			
+			tmp.setImage(webResource.path("/images/thumbnail")
+					.path(imageList[i].getId())
+					.path("160")
+					.path("160")
+					.get(BufferedImage.class));
+			
+			tmp.setInfo(imageList[i]);
+			
+			items[i] = tmp;
+		}
+		
+		this.reels = new SlotMachineReel[3];
+		this.reels[0] = new SlotMachineReel(items, 160, 277);
+		this.reels[1] = new SlotMachineReel(items, 160, 277);
+		this.reels[2] = new SlotMachineReel(items, 160, 277);
+		
+		// TODO: Hatch up
+		
+		this.currentReelNumber = 0;
 	}
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
-		
+		// TODO: Hatch down
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e, IStateContext context) {
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			context.setState(this.startGameState);
+			if (this.currentReelNumber > 2) {
+				context.setState(this.startGameState);
+			} else {
+				this.reels[currentReelNumber].stop();
+				this.currentReelNumber++;
+			}
 		}
 	}
 
 	@Override
 	public void paint(Graphics g) {
-		g.setColor(Color.red);
-		g.drawLine(50, 50, 100, 100);
+		this.reels[0].paint(g.create( 56, 85, 160, 277));
+		this.reels[1].paint(g.create(240, 85, 160, 277));
+		this.reels[2].paint(g.create(424, 85, 160, 277));
+		
+		g.drawImage(slotMachine, 0, 0, null);
 	}
 
 	@Override
 	public void process() {
-		
-		frames++;
-		
-		if (frames > 10) {
-			
-			
-			
-			frames = 0;
-		}
-		
-		System.out.println("Process2");
+		this.reels[0].process();
+		this.reels[1].process();
+		this.reels[2].process();
 	}
-
+	
 	public StartGameState getStartGameState() {
 		return startGameState;
 	}
@@ -91,5 +150,4 @@ public class RunGameState implements IGameState {
 	public void setStartGameState(StartGameState startGameState) {
 		this.startGameState = startGameState;
 	}
-
 }

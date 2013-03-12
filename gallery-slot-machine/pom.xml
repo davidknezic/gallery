@@ -24,4 +24,52 @@
   		<version>1.17</version>
   	</dependency>
   </dependencies>
+  <build>
+  	<plugins>
+  		<plugin>
+  			<groupId>org.apache.maven.plugins</groupId>
+  			<artifactId>maven-assembly-plugin</artifactId>
+  			<configuration>
+  			<archive>
+  				<manifest>
+  					<mainClass>ch.bbw.gallery.slotmachine.SlotMachine</mainClass>
+  				</manifest>
+  			</archive>
+				<descriptorRefs>
+					<descriptorRef>jar-with-dependencies</descriptorRef>
+				</descriptorRefs>
+				<finalName>${project.name}-${project.version}-full</finalName>
+				<appendAssemblyId>false</appendAssemblyId>
+  			</configuration>
+  			<executions>
+                <execution>
+                    <id>make-my-applet-jar</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>single</goal>
+                    </goals>
+                </execution>
+            </executions>
+  		</plugin>
+  		<!--<plugin>
+  			<groupId>org.apache.maven.plugins</groupId>
+  			<artifactId>maven-jarsigner-plugin</artifactId>
+  			<version>1.2</version>
+  			<configuration>
+                <keystore>keystore</keystore>
+                <alias>keyalias</alias>
+                <storepass>storepass</storepass>
+                <keypass>keypass</keypass>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>sign</id>
+                    <goals>
+                        <goal>sign</goal>
+                    </goals>
+                </execution>
+            </executions>
+  		</plugin>-->
+  	</plugins>
+  </build>
 </project>

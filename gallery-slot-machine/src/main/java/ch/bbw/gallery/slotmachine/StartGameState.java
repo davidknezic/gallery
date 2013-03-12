@@ -1,23 +1,36 @@
 package ch.bbw.gallery.slotmachine;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 
 public class StartGameState implements IGameState {
 
+	private BufferedImage slotMachine;
+	
+	private BufferedImage hatch;
+	
 	private IGameState runGameState;
+	
+	public StartGameState() {
+		Class<?> loader = getClass();
+		
+		try {
+			this.slotMachine = ImageIO.read(loader.getResourceAsStream("/slot.png"));
+			this.hatch = ImageIO.read(loader.getResourceAsStream("/hatch.png"));
+		} catch (IOException e) {
+		}
+	}
 	
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void destroy() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -30,13 +43,12 @@ public class StartGameState implements IGameState {
 
 	@Override
 	public void paint(Graphics g) {
-		g.setColor(Color.green);
-		g.drawLine(0, 0, 100, 100);
+		g.drawImage(this.hatch, 51, 85, null);
+		g.drawImage(this.slotMachine, 0, 0, null);
 	}
 
 	@Override
 	public void process() {
-		System.out.println("Process");
 	}
 
 	public IGameState getRunGameState() {
