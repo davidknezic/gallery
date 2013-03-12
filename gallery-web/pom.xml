@@ -11,15 +11,7 @@
   <packaging>war</packaging>
   <name>gallery-web</name>
   <url>http://davidknezic.github.com/gallery</url>
-  <build>
-    <finalName>gallery-web</finalName>
-  </build>
   <dependencies>
-  	<dependency>
-  		<groupId>com.sun.jersey</groupId>
-  		<artifactId>jersey-servlet</artifactId>
-  		<version>1.17</version>
-  	</dependency>
   	<dependency>
   		<groupId>org.imgscalr</groupId>
   		<artifactId>imgscalr-lib</artifactId>
@@ -61,5 +53,45 @@
   		<artifactId>commons-fileupload</artifactId>
   		<version>1.2.2</version>
   	</dependency>
+  	<dependency>
+  		<groupId>ch.bbw.gallery</groupId>
+  		<artifactId>gallery-slot-machine</artifactId>
+  		<version>0.1</version>
+  		<scope>provided</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.sun.jersey</groupId>
+  		<artifactId>jersey-servlet</artifactId>
+  		<version>1.17</version>
+  	</dependency>
   </dependencies>
+  <build>
+    <finalName>gallery-web</finalName>
+    <plugins>
+    	<plugin>
+    		<groupId>org.apache.maven.plugins</groupId>
+    		<artifactId>maven-dependency-plugin</artifactId>
+    		<version>2.6</version>
+    		<executions>
+    			<execution>
+    				<id>copy</id>
+    				<phase>prepare-package</phase>
+    				<goals>
+    					<goal>copy</goal>
+    				</goals>
+    				<configuration>
+						<artifactItems>
+							<artifactItem>
+								<groupId>ch.bbw.gallery</groupId>
+								<artifactId>gallery-slot-machine</artifactId>
+								<outputDirectory>${project.build.directory}/${project.name}</outputDirectory>
+								<destFileName>slot-machine.jar</destFileName>
+							</artifactItem>
+						</artifactItems>
+    				</configuration>
+    			</execution>
+    		</executions>
+    	</plugin>
+    </plugins>
+  </build>
 </project>

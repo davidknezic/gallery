@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	
+	<title>Gallery</title>
+
+	<link rel="stylesheet" href="assets/css/bootstrap.css" />
+	<link rel="stylesheet" href="assets/css/bootstrap-responsive.css" />
+	<link rel="stylesheet" href="assets/css/layout.css" />
+	
+	<script type="text/javascript" src="assets/js/jquery-1.8.3.js"></script>
+	<script type="text/javascript" src="assets/js/jquery.ui.widget.js"></script>
+	<script type="text/javascript" src="assets/js/jquery.iframe-transport.js"></script>
+	<script type="text/javascript" src="assets/js/jquery.fileupload.js"></script>
+	<script type="text/javascript" src="assets/js/bootstrap.js"></script>
+	<script type="text/javascript" src="assets/js/knockout-2.2.0.debug.js"></script>
+	<script type="text/javascript" src="assets/js/knockout-extensions.js"></script>
+	<script type="text/javascript" src="assets/js/ViewModels.js"></script>
+</head>
+<body>
+
+	<div class="navbar navbar-fixed-top navbar-inverse">
+	  <div class="navbar-inner">
+	  <div class="gg-container" style="margin-bottom: 0;">
+	    <a class="brand" href="#">Gallery</a>
+	    <ul class="nav">
+	      <li class="active"><a href="#">Home</a></li>
+	      <li><a href="#">Link</a></li>
+	      <li><a href="#">Link</a></li>
+	    </ul>
+	    
+	    <div class="btn-group pull-right">
+  <a class="btn" href="#"><i class="icon-user"></i> User</a>
+  </div>
+	    
+	  </div>
+	  </div>
+	</div>
+
+	<div class="gg-container">
+		<div class="gg-header">
+			<ul class="nav nav-pills">
+				<li class="active">
+					<a href="index.xhtml">Home</a>
+				</li>
+				<li>
+					<a href="gallery.xhtml">Gallery</a>
+				</li>
+				<li>
+					<a href="upload.xhtml">Upload</a>
+				</li>
+			</ul>
+		</div>
+		<div class="gg-page">
+			
+			<div id="gg-banner" class="gg-banner" style="background: url(http://openwalls.com/image/399/explosion_of_colors_1920x1200.jpg) center; position: relative; top: -1px; left: -1px;">
+			</div>
+	
+			<div class="jumbotron gg-introduction">
+				<h1>Eine Galerie, weltweit!</h1>
+				<p class="lead">Auf Inspirationssuche?</p>
+				<a class="btn btn-large btn-success" href="gallery.xhtml">Stöbern</a>
+				<a class="btn btn-large btn-info" href="upload.xhtml">Bilder hochladen</a>
+			</div>
+			
+			<div id="images" class="image-container">
+				<div class="image-tile">
+					
+				</div>
+				<div class="image-tile">
+					
+				</div>
+			</div>
+	
+			<!-- div class="row-fluid">
+				<div class="span8 offset2">
+					<div class="thumbnail">
+						<img src="http://placehold.it/620x350&amp;text=Video+Platzhalter" alt="Placeholder for a video" />
+					</div>
+				</div>
+			</div> -->
+			
+		</div>
+	</div>
+
+	<div class="gg-footer-outer">
+		<div class="gg-container">© D.Knezic &amp; L.Koch; 2013</div>
+	</div>
+
+	<script type="text/javascript">
+		$(function () {
+			$.ajax({
+				url: 'api/images/random/10',
+				success: function (response) {
+					console.log(response);
+					
+					$('#gg-banner').css('background-image', 'url(api/images/thumbnail/' + response[0].id + '/960/301)');
+				}
+			});
+			
+			$.ajax({
+				url: 'api/images/list/60',
+				success: function (response) {
+
+					$('.image-tile:eq(0)').css('background-image', 'url(api/images/thumbnail/' + response[0].id + '/480/480)');
+					$('.image-tile:eq(1)').css('background-image', 'url(api/images/thumbnail/' + response[1].id + '/480/480)');
+				}
+			});
+		});
+	</script>
+
+	<!-- <object type="application/x-java-applet" height="300" width="550">
+		<param name="code" value="ch.bbw.gallery.slotmachine.SlotMachine.class" />
+		<param name="archive" value="slot-machine.jar" />
+		<param name="api" value="http://localhost:8080/gallery-web/api" />
+	</object> -->
+</body>
+</html>

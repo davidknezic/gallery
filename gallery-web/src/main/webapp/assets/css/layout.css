@@ -37,7 +37,8 @@ body {
 
 .gg-banner {
 	background: #dedede;
-	height: 300px;
+	height: 301px;
+	width: 960px;
 }
 
 .gg-page .gg-introduction {
@@ -48,4 +49,18 @@ body {
 
 .gg-footer-outer {
 	border-top: 5px solid green;
+}
+
+.image-container {
+	width: 960px;
+	position: relative;
+	left: -1px;
+	top: -1px;
+}
+
+.image-tile {
+	width: 480px;
+	height: 480px;
+	background: red;
+	float: left;
 }
