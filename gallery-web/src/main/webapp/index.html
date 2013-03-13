@@ -64,6 +64,21 @@
 				<a class="btn btn-large btn-info" href="upload.xhtml">Bilder hochladen</a>
 			</div>
 			
+			<br />
+			
+			<object type="application/x-java-applet" width="640" height="480">
+				<param name="code" value="ch.bbw.gallery.slotmachine.SlotMachine.class" />
+				<param name="archive" value="slot-machine.jar" />
+				<param name="api" value="http://localhost:8080/gallery-web/api" />
+			</object>
+			
+			<form action="api/images/upload" method="post" enctype="multipart/form-data">
+				<input type="file" multiple="multiple" name="files" />
+				<button type="submit">Send!</button>
+			</form>
+						
+			<br />
+			
 			<div id="images" class="image-container">
 				<div class="image-tile">
 					
@@ -91,7 +106,7 @@
 	<script type="text/javascript">
 		$(function () {
 			$.ajax({
-				url: 'api/images/random/10',
+				url: 'api/images/random/1',
 				success: function (response) {
 					console.log(response);
 					
@@ -100,7 +115,7 @@
 			});
 			
 			$.ajax({
-				url: 'api/images/list/60',
+				url: 'api/images/list/2',
 				success: function (response) {
 
 					$('.image-tile:eq(0)').css('background-image', 'url(api/images/thumbnail/' + response[0].id + '/480/480)');
@@ -109,11 +124,5 @@
 			});
 		});
 	</script>
-
-	<!-- <object type="application/x-java-applet" height="300" width="550">
-		<param name="code" value="ch.bbw.gallery.slotmachine.SlotMachine.class" />
-		<param name="archive" value="slot-machine.jar" />
-		<param name="api" value="http://localhost:8080/gallery-web/api" />
-	</object> -->
 </body>
 </html>
