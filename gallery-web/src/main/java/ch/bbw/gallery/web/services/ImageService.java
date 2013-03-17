@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
 
+import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.imgscalr.Scalr.Method;
@@ -27,6 +29,7 @@ import ch.bbw.gallery.core.models.ImageSize;
 import ch.bbw.gallery.core.models.ImageType;
 
 import com.mongodb.BasicDBObject;
+import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DB;
 import com.mongodb.DBCursor;
 import com.mongodb.DBObject;
@@ -55,6 +58,11 @@ public class ImageService implements IImageService {
 	private GridFS gridFS;
 	
 	/**
+	 * GridFS instance which holds the thumbnail files (cache)
+	 */
+	private GridFS thumbsGridFS;
+	
+	/**
 	 * Json object mapper
 	 */
 	@SuppressWarnings("unused")
@@ -69,6 +77,7 @@ public class ImageService implements IImageService {
 		this.mongoClient = new MongoClient();
 		this.db = mongoClient.getDB("gallery");
 		this.gridFS = new GridFS(db);
+		this.thumbsGridFS = new GridFS(db, "thumbs");
 		
 		this.mapper = new ObjectMapper();
 	}
@@ -135,6 +144,11 @@ public class ImageService implements IImageService {
 	public void downloadImage(String id, ImageSize size, OutputStream output) throws IOException {
 		final Image image = this.retrieveImage(id);
 		
+		// Get the cached image if available
+		if (downloadCachedImage(id, size, output)) {
+			return;
+		}
+		
 		final PipedInputStream in = new PipedInputStream();
 		final PipedOutputStream out = new PipedOutputStream(in);
 		
@@ -142,9 +156,11 @@ public class ImageService implements IImageService {
 			public void run() {
 				try {
 					downloadImage(image.getId(), out);
+				} catch (IOException e) {
+				}
+				try {
 					out.close();
 				} catch (IOException e) {
-					e.printStackTrace();
 				}
 			}
 		}).start();
@@ -154,6 +170,27 @@ public class ImageService implements IImageService {
 		
 		img = resizeImage(img, size.getWidth(), size.getHeight());
 		img = cropImage(img, size.getWidth(), size.getHeight());
+		
+		final BufferedImage defImg = img;
+		
+		// Save the new image to the cache
+		final PipedOutputStream pout = new PipedOutputStream();
+		final PipedInputStream pin = new PipedInputStream(pout);
+		
+		new Thread(new Runnable() {
+			public void run() {
+				try {
+					ImageIO.write(defImg, image.getType().toString(), pout);
+				} catch (IOException e) {
+				}
+				try {
+					pout.close();
+				} catch (IOException e) {
+				}
+			}
+		}).start();
+		
+		uploadCachedImage(id, size, pin);
 		
 		ImageIO.write(img, image.getType().toString(), output);
 	}
@@ -185,7 +222,6 @@ public class ImageService implements IImageService {
 			while (cursor.hasNext()) {
 				GridFSDBFile file = (GridFSDBFile) cursor.next();
 				
-				//String id = file.getId().toString();
 				Image image = mapGridFSDBFileToImage(file);
 				images.add(image);
 			}
@@ -201,7 +237,6 @@ public class ImageService implements IImageService {
 				
 				GridFSDBFile file = (GridFSDBFile) cursor.skip(num).next();
 				
-				//String id = file.getId().toString();
 				Image image = mapGridFSDBFileToImage(file);
 				
 				if (!images.contains(image)) {
@@ -240,7 +275,7 @@ public class ImageService implements IImageService {
 		DBObject sort = new BasicDBObject("uploadDate", -1); 
 		
 		DBCursor cursor = this.gridFS.getFileList(query).sort(sort);
-		System.out.println(count);
+		
 		while (cursor.hasNext() && images.size() < count) {
 			GridFSDBFile file = (GridFSDBFile)cursor.next();
 			
@@ -252,6 +287,12 @@ public class ImageService implements IImageService {
 		return images;
 	}
 	
+	/**
+	 * Maps a raw grid fs database file into an image
+	 * 
+	 * @param file Raw grid fs database file
+	 * @return Image
+	 */
 	private Image mapGridFSDBFileToImage(GridFSDBFile file) {
 		BasicDBObject dbo = (BasicDBObject)file.getMetaData();
 		
@@ -262,6 +303,43 @@ public class ImageService implements IImageService {
 		image.setType(ImageType.fromMimeType(file.getContentType()));
 		
 		return image;
+	}
+	
+	private boolean downloadCachedImage(String id, ImageSize size, OutputStream output) {
+		DBObject query = BasicDBObjectBuilder
+				.start("metadata.id", new ObjectId(id))
+				.add("metadata.size.width", size.getWidth())
+				.add("metadata.size.height", size.getHeight())
+				.get();
+		
+		GridFSDBFile file = this.thumbsGridFS.findOne(query);
+		
+		if (file == null)
+			return false;
+		
+		try {
+			IOUtils.copy(file.getInputStream(), output);
+			
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
+	}
+	
+	private void uploadCachedImage(String id, ImageSize size, InputStream stream) {
+		DBObject sizeObject = BasicDBObjectBuilder
+				.start("width", size.getWidth())
+				.add("height", size.getHeight())
+				.get();
+		
+		DBObject metadataObject = BasicDBObjectBuilder
+				.start("id", new ObjectId(id))
+				.add("size", sizeObject)
+				.get();
+		
+		GridFSInputFile file = this.thumbsGridFS.createFile(stream, true);
+		file.setMetaData(metadataObject);
+		file.save();
 	}
 	
 	private BufferedImage resizeImage(BufferedImage img, int width, int height) {
