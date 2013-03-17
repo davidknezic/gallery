@@ -1,6 +1,54 @@
-.container-narrow {
+body {
+	padding-top: 40px;
+	background: url(../img/bg.png) repeat;
+}
+
+.narrow {
 	max-width: 960px;
 	margin: 0 auto;
+}
+
+.thumbMini {
+	position: relative;
+	width: 240px;
+	height: 240px;
+	float: left;
+}
+
+.thumbMini > img {
+	position: absolute;
+	left: 0;
+	top: 0;
+	z-index: -5;
+}
+
+.thumbMini > a {
+	display: block;
+	width: 100%;
+	height: 100%;
+	text-decoration: none;
+	color: inherit;
+}
+
+.thumbMini > a * {
+	visibility: hidden;
+}
+
+.thumbMini > a:hover {
+	
+}
+
+.thumbMini > a:hover * {
+	visibility: visible;
+}
+
+.thumbMini > a > span {
+	background-color: rgba(0, 0, 0, 0.85);
+	position: absolute;
+	bottom: 0;
+	display: block;
+	width: auto;
+	padding: 20px;
 }
 
 .jumbotron {
@@ -13,11 +61,6 @@
 
 .content-wrapper {
 	background-color: blue;
-}
-
-body {
-	background: #f2f2f2;
-	border-top: 5px solid green;
 }
 
 .gg-container {

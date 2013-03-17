@@ -1,0 +1,14 @@
+<div data-bind="foreach: images">
+	
+	<div class="thumbMini">
+		<img data-bind="attr: { src: 'api/images/thumbnail/' + id + '/240/240' }" />
+		<a data-bind="attr: { href: '#!/see/' + id }">
+			<span data-bind="text: comment"></span>
+		</a>
+	</div>
+	
+</div>
+
+<div style="clear: both;"></div>
+
+<div data-bind="infiniteScroll: load"></div>
