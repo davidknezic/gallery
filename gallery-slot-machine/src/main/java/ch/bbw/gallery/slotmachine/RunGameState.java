@@ -10,6 +10,8 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.ws.rs.core.MediaType;
 
+import org.codehaus.jackson.jaxrs.JacksonJsonProvider;
+
 import ch.bbw.gallery.core.models.Image;
 
 import com.sun.jersey.api.client.Client;
@@ -60,8 +62,9 @@ public class RunGameState implements IGameState {
 		
 		// Set up rest client
 		ClientConfig clientConfig = new DefaultClientConfig();
-        clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
-		Client c = Client.create(clientConfig);
+        //clientConfig.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING, Boolean.TRUE);
+		clientConfig.getClasses().add(JacksonJsonProvider.class);
+        Client c = Client.create(clientConfig);
 		
 		webResource = c.resource(path);
 		
