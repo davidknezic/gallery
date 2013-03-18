@@ -1,12 +1,11 @@
 package ch.bbw.gallery.slotmachine;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
+import java.util.Random;
 
 import javax.imageio.ImageIO;
 import javax.ws.rs.core.MediaType;
@@ -31,9 +30,14 @@ public class RunGameState implements IGameState {
 	private WebResource webResource;
 	
 	/**
+	 * Random object ensuring game randomness
+	 */
+	private Random random;
+	
+	/**
 	 * The stage of this state
 	 */
-	private RunGameStateStage stage;
+	//private RunGameStateStage stage;
 	
 	/**
 	 * Image of the slot machine
@@ -43,17 +47,11 @@ public class RunGameState implements IGameState {
 	/**
 	 * Image of the hatch
 	 */
-	private BufferedImage hatch;
+	//private BufferedImage hatch;
 	
 	private int currentReelNumber;
 	
 	private Image[] imageList;
-	
-	private BufferedImage currentImage;
-	
-	private int frames = 0;
-	
-	private int currentImageNumber = 0;
 	
 	private SlotMachineReel[] reels;
 	
@@ -67,16 +65,19 @@ public class RunGameState implements IGameState {
 		
 		webResource = c.resource(path);
 		
+		// Initialize random object
+		random = new Random(new Date().getTime());
+		
 		try {
 			this.slotMachine = ImageIO.read(loader.getResourceAsStream("/slot.png"));
-			this.hatch = ImageIO.read(loader.getResourceAsStream("/hatch.png"));
+			//this.hatch = ImageIO.read(loader.getResourceAsStream("/hatch.png"));
 		} catch (IOException e) {
 		}
 	}
 	
 	@Override
 	public void init() {
-		this.stage = RunGameStateStage.OPENING;
+		//this.stage = RunGameStateStage.OPENING;
 		
 		imageList = webResource.path("/images/random")
 				.path("10")
@@ -86,7 +87,6 @@ public class RunGameState implements IGameState {
 		RunGameStateReelItem[] items = new RunGameStateReelItem[10];
 		
 		for (int i = 0; i < imageList.length; i++) {
-			System.out.println(imageList[i].getId());
 			RunGameStateReelItem tmp = new RunGameStateReelItem();
 			
 			tmp.setImage(webResource.path("/images/thumbnail")
@@ -101,9 +101,9 @@ public class RunGameState implements IGameState {
 		}
 		
 		this.reels = new SlotMachineReel[3];
-		this.reels[0] = new SlotMachineReel(items, 160, 277);
-		this.reels[1] = new SlotMachineReel(items, 160, 277);
-		this.reels[2] = new SlotMachineReel(items, 160, 277);
+		this.reels[0] = new SlotMachineReel(items, 160, 277, random);
+		this.reels[1] = new SlotMachineReel(items, 160, 277, random);
+		this.reels[2] = new SlotMachineReel(items, 160, 277, random);
 		
 		// TODO: Hatch up
 		

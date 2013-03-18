@@ -59,7 +59,7 @@ public class SlotMachine extends Applet implements ActionListener, KeyListener, 
 		this.offGraphics = this.offImage.getGraphics();
 		
 		// Create the main application timer
-		this.timer = new Timer(40, this);
+		this.timer = new Timer(20, this);
 	}
 	
 	/**

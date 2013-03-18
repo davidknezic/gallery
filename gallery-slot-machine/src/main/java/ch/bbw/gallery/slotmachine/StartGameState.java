@@ -36,7 +36,6 @@ public class StartGameState implements IGameState {
 	@Override
 	public void keyPressed(KeyEvent e, IStateContext context) {
 		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			System.out.println("Enter");
 			context.setState(this.runGameState);
 		}
 	}
