@@ -30,6 +30,13 @@ public interface IImageService {
 	public void saveImage(Image image);
 	
 	/**
+	 * Publishes the specified image
+	 * 
+	 * @param image Image object to publish
+	 */
+	public void publishImage(Image image);
+	
+	/**
 	 * Writes an image to the provided output stream
 	 * 
 	 * @param id Image identifier

@@ -114,6 +114,29 @@ public class ImagesService {
 	}
 	
 	/**
+	 * Publish an image
+	 * 
+	 * @param id Image identifier
+	 * @return Whole Image, as saved in the database 
+	 * @throws WebApiException
+	 */
+	@POST
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/publish")
+	public Image publish(String id) throws WebApiException {
+		Image image = this.imageService.retrieveImage(id);
+		
+		if (image == null) {
+			throw new WebApiException(Status.NOT_FOUND, "Image with id '%s' not found", id);
+		}
+		
+		this.imageService.publishImage(image);
+		
+		return image;
+	}
+	
+	/**
 	 * Upload one or multiple files
 	 * 
 	 * @param request Request context

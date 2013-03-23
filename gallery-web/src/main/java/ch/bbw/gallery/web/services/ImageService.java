@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Random;
 
 import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageInputStream;
 
 import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
@@ -121,6 +120,19 @@ public class ImageService implements IImageService {
 	}
 	
 	/**
+	 * Publishes the specified image
+	 * 
+	 * @param image Image object to publish
+	 */
+	public void publishImage(Image image) {
+		GridFSDBFile file = this.gridFS.findOne(new ObjectId(image.getId()));
+		
+		DBObject dbo = file.getMetaData();
+		dbo.put("published", true);
+		file.save();
+	}
+	
+	/**
 	 * Writes an image to the provided output stream
 	 * 
 	 * @param id Image identifier
@@ -215,8 +227,12 @@ public class ImageService implements IImageService {
 	 */
 	public List<Image> randomImages(int count) {
 		List<Image> images = new ArrayList<Image>();
+		DBObject query = new BasicDBObject();
 		
-		DBCursor cursor = this.gridFS.getFileList();
+		// Only published images
+		query.put("published", true);
+		
+		DBCursor cursor = this.gridFS.getFileList(query);
 		
 		if (cursor.count() <= count) {
 			while (cursor.hasNext()) {
@@ -261,15 +277,17 @@ public class ImageService implements IImageService {
 	public List<Image> getImages(int count, String startId)
 	{
 		List<Image> images = new ArrayList<Image>();
-		DBObject query;
+		DBObject query = new BasicDBObject();
 		
+		// Only published images
+		query.put("published", true);
+		
+		// Only images starting from the provided one
 		if (startId != null) {
 			GridFSDBFile startFile = this.gridFS.findOne(new ObjectId(startId));
 			Date startDate = startFile.getUploadDate();
 		
-			query = new BasicDBObject("uploadDate", new BasicDBObject("$lt", startDate));
-		} else {
-			query = new BasicDBObject();
+			query.put("uploadDate", new BasicDBObject("$lt", startDate));
 		}
 		
 		DBObject sort = new BasicDBObject("uploadDate", -1); 
