@@ -230,7 +230,7 @@ public class ImageService implements IImageService {
 		DBObject query = new BasicDBObject();
 		
 		// Only published images
-		query.put("published", true);
+		query.put("metadata.published", true);
 		
 		DBCursor cursor = this.gridFS.getFileList(query);
 		
@@ -280,7 +280,7 @@ public class ImageService implements IImageService {
 		DBObject query = new BasicDBObject();
 		
 		// Only published images
-		query.put("published", true);
+		query.put("metadata.published", true);
 		
 		// Only images starting from the provided one
 		if (startId != null) {
