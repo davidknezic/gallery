@@ -53,9 +53,9 @@ define(['jquery'], function ($) {
 		_ajaxPost('api/images/edit', JSON.stringify(image));
 	};
 	
-	this._saveAndPublishImage = function (image) {
+	this._saveAndPublishImage = function (image, callback) {
 		_ajaxPost('api/images/edit', JSON.stringify(image), function (data) {
-			_ajaxPost('api/images/publish', { id: data.id });
+			_ajaxPost('api/images/publish', data.id, callback);
 		});
 	};
 	
