@@ -21,6 +21,14 @@ require(['jquery', 'sammy', 'knockout', 'domReady!'], function ($, Sammy, ko) {
 		this.get('#!/home', function (context) {
 			// Delete content
 			context.app.swap('');
+			
+			require(['app/HomeVM', 'text!template/home.html'], function (HomeVM, template) {
+				var viewModel = new HomeVM();
+				
+				$(template).appendTo($('#main'));
+				
+				ko.applyBindingsToDescendants(viewModel, $('#main').get(0));
+			});
 		});
 		
 		this.get('#!/upload', function (context) {
@@ -53,7 +61,25 @@ require(['jquery', 'sammy', 'knockout', 'domReady!'], function ($, Sammy, ko) {
 				ko.applyBindingsToDescendants(viewModel, $('#main').get(0));
 			});
 		});
+		
+		this.get('#!/slot-machine', function (context) {
+			// Delete content
+			context.app.swap('');
+			
+			require(['text!template/slot-machine.html'], function (template) {
+				$(template).appendTo($('#main'));
+			});
+		});
+		
+		this.get('#!/see/:id', function (context) {
+			require(['text!template/see.html'], function (template) {
+				this.params['id'];
+				
+				$(template).appendTo($('#main'));
+				
+			});
+		});
 	});
 	
-	app.run('#/home');
+	app.run('#!/home');
 });

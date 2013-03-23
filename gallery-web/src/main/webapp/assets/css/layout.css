@@ -13,21 +13,24 @@ body {
 	width: 240px;
 	height: 240px;
 	float: left;
+	overflow: hidden;
 }
 
 .thumbMini > img {
 	position: absolute;
 	left: 0;
 	top: 0;
-	z-index: -5;
+	z-index: 5;
 }
 
 .thumbMini > a {
+	position: absolute;
 	display: block;
 	width: 100%;
 	height: 100%;
 	text-decoration: none;
-	color: inherit;
+	color: #dcdcdc;
+	z-index: 10;
 }
 
 .thumbMini > a * {
@@ -46,10 +49,38 @@ body {
 	background-color: rgba(0, 0, 0, 0.85);
 	position: absolute;
 	bottom: 0;
+	left: 0;
+	right: 0;
 	display: block;
-	width: auto;
 	padding: 20px;
 }
+
+body > header {
+	height: 150px;
+	background: url(../img/logo.png) no-repeat bottom center;
+}
+
+.upload-section {
+	border-bottom: 1px solid #dcdcdc;
+	height: 200px;
+	background: url(../img/uploadPicture.png) no-repeat center;
+}
+
+.slot-machine {
+	text-align: center;
+	background: black;
+}
+
+.btn > input[type='file'] {
+	position: relative;
+	text-align: right;
+	-moz-opacity:0 ;
+	filter:alpha(opacity: 0);
+	opacity: 0;
+	z-index: 2;
+}
+
+
 
 .jumbotron {
 	text-align: center;
@@ -69,8 +100,7 @@ body {
 }
 
 .gg-header {
-	height: 200px;
-	background: url(../img/logo.png) no-repeat bottom center;
+	
 }
 
 .gg-page {
