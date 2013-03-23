@@ -1,0 +1,19 @@
+<div id="myCarousel" class="carousel slide">
+	<ol class="carousel-indicators" data-bind="foreach: images">
+		<li data-target="#myCarousel" data-bind="attr: { 'data-slide-to': $index() }, css: { active: $index() == 0 }"></li>
+	</ol>
+	<!-- Carousel items -->
+	<div class="carousel-inner" data-bind="foreach: images">
+		<div class="item" data-bind="css: { active: $index() == 0 }">
+			<img data-bind="attr: { src: 'api/images/thumbnail/' + id + '/960/400' }" style="width: 960px; height: 400px;" />
+		</div>
+	</div>
+	<!-- Carousel nav -->
+	<a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+	<a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+</div>
+
+<div style="text-align: center;">
+	<a href="#!/browse" class="btn btn-large btn-primary">Browse the gallery</a>
+	<a href="#!/upload" class="btn btn-large">Upload some images</a>
+</div>
