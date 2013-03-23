@@ -1,5 +1,42 @@
-<div data-bind="uploader: { send: uploadImage, done: uploadedImage }">HIER<br />HIER<br />HIER<br />HIER<br />HIER<br />HIER<br /></div>
+<div data-bind="uploader: { send: uploadImage, done: uploadedImage, field: $('uploadField') }" class="upload-section">
+	
+</div>
 
-<div data-bind="foreach: images">
-	<div data-bind="text: filename"></div>
+<a class="btn btn-primary">
+	<span>Hello World!</span>
+	<input type="file" id="uploadField" />
+</a>
+
+<div data-bind="if: hasImages">
+	<h4>You have <span data-bind="text: imageCount"></span> image(s) waiting...</h4>
+
+	<table class="table table-striped">
+		<tbody data-bind="foreach: images">
+			<tr>
+				<td>
+					<img class="img-polaroid" data-bind="attr: { src: 'api/images/thumbnail/' + id + '/200/200' }" />
+				</td>
+				<td>
+					<div class="control-group">
+						<label class="control-label">Filename</label>
+						<div class="controls">
+							<input type="text" class="input-xlarge" data-bind="value: filename" />
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label">Comment</label>
+						<div class="controls">
+							<textarea style="width: 700px;" data-bind="value: comment"></textarea>
+						</div>
+					</div>
+					
+					<div class="control-group">
+						<div class="controls">
+							<button class="btn btn-success" data-bind="click: $root.publishImage">Publish</button>
+						</div>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
 </div>
