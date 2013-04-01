@@ -51,6 +51,19 @@ public class ImagesService {
 	}
 	
 	/**
+	 * Get one specific image object
+	 * 
+	 * @param id Image identifier
+	 * @return Image object
+	 */
+	@GET
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/show/{id}")
+	public Image show(@PathParam("id") String id) {
+		return this.imageService.retrieveImage(id);
+	}
+	
+	/**
 	 * Return the specified number of random images
 	 * 
 	 * @param count Number of images to return
