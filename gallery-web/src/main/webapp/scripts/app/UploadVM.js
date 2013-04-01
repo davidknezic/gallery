@@ -1,6 +1,6 @@
 // Upload view model class
 
-define(['knockout', 'app/DataAccessObject', 'binding/uploader'], function (ko, dao) {
+define(['knockout', 'app/DataAccessObject', 'binding/uploader', 'binding/dropzone'], function (ko, dao) {
 	return function () {
 		var self = this;
 		

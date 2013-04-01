@@ -1,20 +1,23 @@
-<div data-bind="uploader: { send: uploadImage, done: uploadedImage, field: $('uploadField') }" class="upload-section">
-	
+<canvas width="960px" height="200" class="dropzone" data-bind="dropzone: {}" style="background: url('assets/img/dropzone.png')">
+</canvas>
+
+<div style="text-align: center; padding: 40px 200px;">
+	<h3>Or just use the conventional way</h3>
+	<br />
+	<input type="file" multiple="multiple" name="files" data-bind="uploader: { send: uploadImage, done: uploadedImage, zone: $('.dropzone') }" />
 </div>
 
-<a class="btn btn-primary">
-	<span>Hello World!</span>
-	<input type="file" id="uploadField" />
-</a>
+<hr />
+
 
 <div data-bind="if: hasImages">
-	<h4>You have <span data-bind="text: imageCount"></span> image(s) waiting...</h4>
+	<h4 style="margin: 20px;">You have <span data-bind="text: imageCount"></span> image(s) waiting...</h4>
 
 	<table class="table table-striped">
 		<tbody data-bind="foreach: images">
 			<tr>
 				<td>
-					<img class="img-polaroid" data-bind="attr: { src: 'api/images/thumbnail/' + id + '/200/200' }" />
+					<img class="img-polaroid" data-bind="attr: { src: 'api/images/thumbnail/' + id + '/200/200' }" style="width: 200px; height: 200px;" />
 				</td>
 				<td>
 					<div class="control-group">

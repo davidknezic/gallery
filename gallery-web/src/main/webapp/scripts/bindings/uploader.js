@@ -3,12 +3,12 @@ define(['jquery', 'knockout', 'jquery.fileupload'], function ($, ko) {
 		init: function(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
 			var opts = valueAccessor();
 	    	
-			$element = $(element);
-			
-	    	$element.fileupload({
+			$(element).fileupload({
 	    		url: 'api/images/upload',
 		        dataType: 'json',
-		        pasteZone: $element,
+		        pasteZone: opts.zone,
+		        dropZone: opts.zone,
+		        fileInput: opts.field,
 		        autoUpload: true,
 		        singleFileUploads: false,
 		        add: function (e, data) {
