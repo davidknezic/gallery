@@ -35,6 +35,10 @@ define(['jquery'], function ($) {
 		});
 	};
 	
+	this._showImage = function (id, callback) {
+		_ajax('api/images/show/' + id, {}, callback);
+	};
+	
 	this._imageList = function (count, startId, callback) {
 		var data = {};
 		
@@ -62,6 +66,7 @@ define(['jquery'], function ($) {
 	// exports
 	return {
 		images: {
+			show: this._showImage,
 			list: this._imageList,
 			random: this._randomImages,
 			save: this._saveImage,
