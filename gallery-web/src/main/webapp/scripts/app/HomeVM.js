@@ -1,6 +1,6 @@
 // home view model class
 
-define(['knockout', 'app/DataAccessObject', 'bootstrap'], function (ko, dao) {
+define(['knockout', 'app/DataAccessObject', 'bootstrap', 'binding/viewer'], function (ko, dao) {
 	return function () {
 		var self = this;
 		

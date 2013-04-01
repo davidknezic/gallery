@@ -6,6 +6,16 @@
 	<div class="carousel-inner" data-bind="foreach: images">
 		<div class="item" data-bind="css: { active: $index() == 0 }">
 			<img data-bind="attr: { src: 'api/images/thumbnail/' + id + '/960/400' }" style="width: 960px; height: 400px;" />
+
+			
+
+			<div class="carousel-caption">
+				<a href="#" class="btn btn-small pull-right" data-bind="viewer: { image: $data, images: [] }">
+					<i class="icon-zoom-in"></i> Details
+				</a>
+			
+				<p data-bind="text: comment"></p>
+			</div>
 		</div>
 	</div>
 	<!-- Carousel nav -->
@@ -13,7 +23,56 @@
 	<a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
 </div>
 
+<div style="text-align: center; padding: 80px 200px;">
+	<h1>Ready to discover?</h1>
+	<br />
+	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent mattis,
+		nisl id hendrerit facilisis, elit lacus lobortis velit, a auctor arcu velit
+		sit amet mi. Vivamus ut mi lacus.</p>
+	<br />
+	<p><a href="#!/browse" class="btn btn-large btn-primary">Browse the gallery</a>
+	<a href="#!/upload" class="btn btn-large">Upload some images</a></p>
+</div>
+
 <div style="text-align: center;">
-	<a href="#!/browse" class="btn btn-large btn-primary">Browse the gallery</a>
-	<a href="#!/upload" class="btn btn-large">Upload some images</a>
+	
+</div>
+
+<hr />
+
+<div style="margin: 20px;">
+<div class="row-fluid">
+	<div class="span6" data-bind="foreach: ['Easy', 'Interactive']">
+
+		<div class="media">
+		  <a class="pull-left" href="#">
+		    <img class="media-object" src="http://placehold.it/64x64">
+		  </a>
+		  <div class="media-body">
+		    <h4 class="media-heading" data-bind="text: $data"></h4>
+		    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent mattis,
+		nisl id hendrerit facilisis, elit lacus lobortis velit, a auctor arcu velit
+		sit amet mi. Vivamus ut mi lacus.
+		    </p>
+		  </div>
+		</div>
+  	
+	</div>
+	<div class="span6" data-bind="foreach: ['Great', 'Global']">
+  
+		<div class="media">
+		  <a class="pull-left" href="#">
+		    <img class="media-object" src="http://placehold.it/64x64">
+		  </a>
+		  <div class="media-body">
+		    <h4 class="media-heading" data-bind="text: $data"></h4>
+		    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent mattis,
+		nisl id hendrerit facilisis, elit lacus lobortis velit, a auctor arcu velit
+		sit amet mi. Vivamus ut mi lacus.
+		    </p>
+		  </div>
+		</div>
+
+	</div>
+</div>
 </div>
