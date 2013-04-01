@@ -2,7 +2,7 @@
 	
 	<div class="thumbMini">
 		<img data-bind="attr: { src: 'api/images/thumbnail/' + id + '/240/240' }" />
-		<a data-bind="attr: { href: '#!/see/' + id }">
+		<a href="#" data-bind="viewer: { image: $data, images: $parent.images }">
 			<span data-bind="text: comment"></span>
 		</a>
 	</div>

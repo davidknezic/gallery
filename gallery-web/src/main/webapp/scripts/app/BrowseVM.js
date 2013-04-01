@@ -1,10 +1,12 @@
 // Browse view model class
 
-define(['jquery', 'knockout', 'binding/infiniteScroll', 'app/DataAccessObject'], function ($, ko, is, dao) {
+define(['jquery', 'knockout', 'binding/infiniteScroll', 'app/DataAccessObject', 'binding/viewer'], function ($, ko, is, dao) {
 	return function () {
 		var self = this;
 		
 		self.images = ko.observableArray();
+		
+		
 		
 		self.load = function (reactivate) {
 			var lastIndex = self.images().length - 1;
