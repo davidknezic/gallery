@@ -70,15 +70,6 @@ require(['jquery', 'sammy', 'knockout', 'domReady!'], function ($, Sammy, ko) {
 				$(template).appendTo($('#main'));
 			});
 		});
-		
-		this.get('#!/see/:id', function (context) {
-			require(['text!template/see.html'], function (template) {
-				this.params['id'];
-				
-				$(template).appendTo($('#main'));
-				
-			});
-		});
 	});
 	
 	app.run('#!/home');
