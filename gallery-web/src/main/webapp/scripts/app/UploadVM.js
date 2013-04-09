@@ -6,6 +6,7 @@ define(['jquery', 'knockout', 'app/DataAccessObject', 'binding/uploader', 'bindi
 		
 		self.images = ko.observableArray();
 		
+		// Fill array from local storage
 		var storedImages = localStorage.getItem("uploads");
 		if (storedImages !== undefined) {
 			var arr = $.parseJSON(storedImages);
@@ -37,18 +38,10 @@ define(['jquery', 'knockout', 'app/DataAccessObject', 'binding/uploader', 'bindi
 				comment: ko.observable(image.comment)
 			});
 			
-			var images = [];
-			
-			$.each(self.images(), function(index, value) {
-				images.push({
-					id: value.id,
-					filename: value.filename(),
-					comment: value.comment()
-				});
-			});
-			
+			// Update local storage
+			var images = self._toRawImageArray(self.images());
 			localStorage.setItem("uploads", JSON.stringify(images));
-		};;
+		};
 		
 		self.publishImage = function (image) {
 			var toSave = {
@@ -59,7 +52,25 @@ define(['jquery', 'knockout', 'app/DataAccessObject', 'binding/uploader', 'bindi
 			
 			dao.images.publish(toSave, function (data) {
 				self.images.remove(image);
+				
+				// Update local storage
+				var images = self._toRawImageArray(self.images());
+				localStorage.setItem("uploads", JSON.stringify(images));
 			});
+		};
+		
+		self._toRawImageArray = function (images) {
+			var raw = [];
+			
+			$.each(images, function(index, value) {
+				raw.push({
+					id: value.id,
+					filename: value.filename(),
+					comment: value.comment()
+				});
+			});
+			
+			return raw;
 		};
 	};
 });
