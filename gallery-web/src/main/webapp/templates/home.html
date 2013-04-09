@@ -1,21 +1,31 @@
 <div id="myCarousel" class="carousel slide">
-	<ol class="carousel-indicators" data-bind="foreach: images">
-		<li data-target="#myCarousel" data-bind="attr: { 'data-slide-to': $index() }, css: { active: $index() == 0 }"></li>
+	<ol class="carousel-indicators">
+		<!-- ko foreach: images -->
+			<li data-target="#myCarousel" data-bind="attr: { 'data-slide-to': $index() }, css: { active: $index() == 0 }"></li>
+		<!-- /ko -->
+		<li data-target="#myCarousel" data-bind="attr: { 'data-slide-to': images().length + 0 }"></li>
+		<li data-target="#myCarousel" data-bind="attr: { 'data-slide-to': images().length + 1 }"></li>
 	</ol>
 	<!-- Carousel items -->
-	<div class="carousel-inner" data-bind="foreach: images">
-		<div class="item" data-bind="css: { active: $index() == 0 }">
-			<img data-bind="attr: { src: 'api/images/thumbnail/' + id + '/960/400' }" style="width: 960px; height: 400px;" />
-
-			
-
-			<div class="carousel-caption">
-				<a href="#" class="btn btn-small pull-right" data-bind="viewer: { image: $data, images: [] }">
-					<i class="icon-zoom-in"></i> Details
-				</a>
-			
-				<p data-bind="text: comment"></p>
+	<div class="carousel-inner">
+		<!--  ko foreach: images -->
+			<div class="item" data-bind="css: { active: $index() == 0 }">
+				<img data-bind="attr: { src: 'api/images/thumbnail/' + id + '/960/400' }" style="width: 960px; height: 400px;" />
+	
+				<div class="carousel-caption">
+					<a href="#" class="btn btn-small pull-right" data-bind="viewer: { image: $data, images: [] }">
+						<i class="icon-zoom-in"></i> Details
+					</a>
+				
+					<p data-bind="text: comment"></p>
+				</div>
 			</div>
+		<!-- /ko -->
+		<div class="item" style="height: 400px; overflow: hidden;">
+			<img src="http://fc02.deviantart.net/fs71/f/2012/302/b/d/cat_walk_lineart_animation_by_squalled_101-d5j95qe.gif" width="960px;" />
+		</div>
+		<div class="item" style="height: 400px; overflow: hidden;">
+			<canvas width="960" height="400" data-bind="pong: {}"></canvas>
 		</div>
 	</div>
 	<!-- Carousel nav -->
@@ -36,6 +46,23 @@
 
 <div style="text-align: center;">
 	
+</div>
+
+<hr />
+
+<div class="thumbnail" style="width: 320px; margin: 0 auto;">
+	<video width="320" height="240" id="video">
+		<source src="cats.mp4" type="video/mp4" />
+		Your browser does not support the video tag.
+	</video>
+	
+	<div class="caption">
+		<p>
+			<a href="#" class="btn" data-bind="click: function () { $('video').get(0).play(); }">Play</a>
+			<a href="#" class="btn" data-bind="click: function () { $('video').get(0).pause(); }">Pause</a>
+			<a href="#" class="btn" data-bind="click: function () { $('video').get(0).currentTime = 0; }">Restart</a>
+		</p>
+	</div>
 </div>
 
 <hr />
